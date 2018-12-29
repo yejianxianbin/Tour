@@ -9,7 +9,14 @@
 - 多文本编辑器UEditor整合。 <br /> 
 
 
-所用到的框架：
+使用方法：
+maven项目导入，  部署到tomcat运行即可。
+
+数据库文件在db目录下
+
+所用到的技术：
+mysql
+tomcat
 - Spring <br /> 
 - SpringMVC <br /> 
 - MyBatis <br /> 
