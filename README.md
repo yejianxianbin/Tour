@@ -1,4 +1,4 @@
-# Tour
+﻿# Tour
 一个旅游景点网站项目
 
 
@@ -21,4 +21,14 @@ tomcat
 - SpringMVC <br /> 
 - MyBatis <br /> 
 - 后端界面则使用easyui进行搭建 <br /> 
+
+
+
+运行界面：<br/>
+![Image text](https://github.com/yejianxianbin/Tour/blob/master/RunPage/1.PNG)
+![Image text](https://github.com/yejianxianbin/Tour/blob/master/RunPage/2.PNG)
+![Image text](https://github.com/yejianxianbin/Tour/blob/master/RunPage/3.PNG)
+![Image text](https://github.com/yejianxianbin/Tour/blob/master/RunPage/4.PNG)
+![Image text](https://github.com/yejianxianbin/Tour/blob/master/RunPage/5.PNG)
+
 
