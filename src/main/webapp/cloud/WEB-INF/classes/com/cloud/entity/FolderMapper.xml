@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.entity.FolderMapper">
+
+	<resultMap id="FolderResultMap"
+		type="com.cloud.entity.Folder">
+		<id property="id" column="dir_id" />
+		<result property="name" column="dir_name" />
+		<result property="parentFolder" column="parent_dir" />
+		<result property="path" column="dir_path" />
+
+		<association property="createUser"
+			javaType="com.cloud.entity.User">
+			<id property="id" column="dir_user_id" />
+		</association>
+	</resultMap>
+
+	<insert id="addFolder" parameterType="com.cloud.entity.Folder"
+		useGeneratedKeys="true">
+		INSERT INTO dir_inf (dir_name, parent_dir,
+		dir_user_id, dir_path) VALUES
+		(#{name},#{parentFolder},#{createUser.id},#{path})
+	</insert>
+
+	<insert id="addRootFolder" parameterType="com.cloud.entity.User"
+		useGeneratedKeys="true">
+		INSERT INTO dir_inf(dir_name,dir_user_id,dir_path)
+		VALUES
+		(#{username},#{id},'\\')
+	</insert>
+
+	<select id="selectFolderListByFolderId"
+		resultMap="FolderResultMap" parameterType="String">
+		SELECT * FROM dir_inf
+		WHERE
+		parent_dir = #{id}
+		ORDER BY dir_id ASC
+	</select>
+
+	<select id="selectRootFolderByUserId"
+		resultMap="FolderResultMap" parameterType="Integer">
+		SELECT * FROM dir_inf
+		WHERE
+		parent_dir is null AND dir_user_id = #{id}
+	</select>
+
+	<select id="selectFolderById" resultMap="FolderResultMap"
+		parameterType="Integer">
+		SELECT * FROM dir_inf WHERE dir_id = #{id}
+	</select>
+
+	<!--根据子文件夹的父文件夹ID列查找父文件夹 -->
+	<select id="selectFatherFolderById" resultMap="FolderResultMap"
+		parameterType="Integer">
+		SELECT * FROM dir_inf
+		WHERE dir_id = #{id}
+	</select>
+
+	<!--根据父文件夹对象筛选出所有子文件夹 -->
+	<select id="selectAllFolderByFatherFolder"
+		resultMap="FolderResultMap" parameterType="com.cloud.entity.Folder">
+		SELECT * FROM dir_inf
+		WHERE
+		dir_path like '${path}[^/]%' AND dir_id != #{id}
+	</select>
+
+	<delete id="deleteFolderById" parameterType="Integer">
+		DELETE FROM dir_inf
+		WHERE dir_id = #{id}
+	</delete>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.entity.CloudFileMapper">
+
+	<resultMap id="CloudFileResultMap"
+		type="com.cloud.entity.CloudFile">
+		<id property="id" column="file_id" />
+		<result property="name" column="file_name" />
+		<result property="size" column="file_size" />
+		<result property="fileType" column="file_type" />
+		<result property="uploadTime" column="file_upload_time"
+			javaType="java.sql.Timestamp" />
+		<result property="status" column="file_status" />
+		<association property="uploadUser"
+			javaType="com.cloud.entity.User">
+			<id property="id" column="file_upload_user_id" />
+			<result property="username" column="username" />
+		</association>
+
+		<association property="fatherFolder"
+			javaType="com.cloud.entity.Folder">
+			<id property="id" column="file_dir_id" />
+			<result property="path" column="dir_path" />
+		</association>
+	</resultMap>
+
+	<insert id="addFile" parameterType="com.cloud.entity.CloudFile"
+		useGeneratedKeys="true">
+		INSERT INTO
+		file_inf(file_name,file_size,file_type,file_upload_time,file_status,file_dir_id,file_upload_user_id)
+		VALUES
+		(#{name},#{size},#{fileType},#{uploadTime},#{status},#{fatherFolder.id},#{uploadUser.id})
+	</insert>
+
+	<select id="selectFileListByFolderId"
+		resultMap="CloudFileResultMap" parameterType="String">
+		SELECT * FROM file_inf
+		WHERE file_dir_id = #{id}
+		ORDER BY file_upload_time DESC
+	</select>
+
+	<select id="selectFileById" resultMap="CloudFileResultMap"
+		parameterType="Integer">
+		SELECT * FROM file_inf WHERE file_id = #{id}
+	</select>
+
+	<select id="selectPublicFile" resultMap="CloudFileResultMap">
+		SELECT f.*, d.dir_path,
+		d.dir_id, u.user_id, u.username
+		FROM file_inf f, dir_inf d, user_inf u
+		WHERE f.file_status = 1 AND f.file_dir_id = d.dir_id AND
+		f.file_upload_user_id = u.user_id
+	</select>
+
+	<select id="selectFileByFileName" resultMap="CloudFileResultMap"
+		parameterType="hashmap">
+		SELECT * FROM file_inf
+		WHERE file_name = #{fileName} AND file_upload_user_id = #{userId} AND
+		file_dir_id = #{dirId}
+	</select>
+
+	<delete id="deleteFileById" parameterType="Integer">
+		DELETE FROM file_inf
+		WHERE file_id = #{id}
+	</delete>
+
+	<delete id="deleteFileByFolderId" parameterType="Integer">
+		DELETE FROM
+		file_inf WHERE file_dir_id = #{id}
+	</delete>
+
+	<select id="selectPhotoByUserId" parameterType="Integer"
+		resultMap="CloudFileResultMap">
+		SELECT * FROM file_inf
+		WHERE file_upload_user_id = #{id}
+		AND (file_type = 'gif' OR file_type = 'png' OR file_type='jpg' OR
+		file_type = 'jpeg' OR file_type = 'ico')
+		ORDER BY file_upload_time DESC
+	</select>
+
+	<select id="selectDocumentByUserId" parameterType="Integer"
+		resultMap="CloudFileResultMap">
+		SELECT * FROM file_inf
+		WHERE file_upload_user_id = #{id}
+		AND (file_type = 'docx' OR file_type = 'doc' OR file_type='ppt' OR
+		file_type = 'pptx'
+		OR file_type = 'xls' OR file_type = 'xlsx' OR file_type='txt')
+		ORDER BY
+		file_upload_time DESC
+	</select>
+
+	<select id="selectMusicByUserId" parameterType="Integer"
+		resultMap="CloudFileResultMap">
+		SELECT * FROM file_inf
+		WHERE file_upload_user_id = #{id}
+		AND (file_type = 'mp3' OR file_type = 'wma' OR file_type='flac' OR
+		file_type = 'aac'
+		OR file_type = 'wav' OR file_type = 'mmf' OR file_type='m4a')
+		ORDER BY
+		file_upload_time DESC
+	</select>
+
+	<select id="selectMovieByUserId" parameterType="Integer"
+		resultMap="CloudFileResultMap">
+		SELECT * FROM file_inf
+		WHERE file_upload_user_id = #{id}
+		AND (file_type = 'mp4' OR file_type = 'mkv' OR file_type='rmvb' OR
+		file_type = 'avi'
+		OR file_type = 'wma' OR file_type = 'rm' OR file_type='3gp')
+		ORDER BY
+		file_upload_time DESC
+	</select>
+
+	<select id="selectZipByUserId" parameterType="Integer"
+		resultMap="CloudFileResultMap">
+		SELECT * FROM file_inf
+		WHERE file_upload_user_id = #{id}
+		AND (file_type = 'zip' OR file_type = 'rar' OR file_type='7z' OR
+		file_type = 'cab')
+		ORDER BY file_upload_time DESC
+	</select>
+
+	<update id="changeFileAccessByFileId" parameterType="hashmap">
+		UPDATE
+		file_inf SET file_status = #{access}
+		WHERE file_id = #{fileId}
+	</update>
+</mapper>

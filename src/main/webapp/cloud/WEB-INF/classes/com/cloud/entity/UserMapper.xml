@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.entity.UserMapper">
+
+	<resultMap id="UserResultMap" type="com.cloud.entity.User">
+		<id property="id" column="user_id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="registerTime" column="register_time"
+			javaType="java.sql.Timestamp" />
+		<result property="email" column="email" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<insert id="addUser" parameterType="com.cloud.entity.User"
+		useGeneratedKeys="true">
+		INSERT INTO
+		user_inf(username,password,email,register_time,status)
+		VALUES (#{username},#{password},#{email},#{registerTime},#{status})
+	</insert>
+
+	<select id="selectUserByUsername" resultMap="UserResultMap"
+		parameterType="String">
+		SELECT * FROM user_inf WHERE username = #{username}
+	</select>
+
+	<update id="changeUserStatus" parameterType="Integer">
+		UPDATE user_inf SET
+		status = 1 WHERE user_id = #{userId}
+	</update>
+</mapper>
